@@ -134,7 +134,7 @@ Here is an example on how to add a search field to your jstree instance.
 
 Template Helper
 ```
-Template.adminEditEmployeeTargetDef.events({
+Template.replaceWithYourTemplateName.events({
 
   'click #clearsearch'(e) {
     $("div[name='myselection']").jstree(true).clear_search();
