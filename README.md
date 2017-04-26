@@ -46,6 +46,11 @@ In the schema, which will then work with a `quickForm` or `afQuickFields`:
             afFieldInput: {
                 settings: {
                     plugins: ["checkbox", "wholerow", "sort"],
+                    search: {
+                       show_only_matches: true,
+                       show_only_matches_children: true,
+                       fuzzy: true
+                    },
                     themes: {
                         name: 'proton',
                         dots: true,
@@ -99,7 +104,7 @@ Categories.attachSchema(new SimpleSchema({
         autoform: {
             type: "hidden",
             label: false
-        } 
+        }
     },
     'node.$.children.$.text': {
         type: String
@@ -118,16 +123,52 @@ Categories.attachSchema(new SimpleSchema({
         autoform: {
             type: "hidden",
             label: false
-        } 
+        }
     },
     'node.$.children.$.children.$.text': {
         type: String
     }
 }))
 ```
+Here is an example on how to add a search field to your jstree instance.
 
+Template Helper
+```
+Template.adminEditEmployeeTargetDef.events({
+
+  'click #clearsearch'(e) {
+    $("div[name='myselection']").jstree(true).clear_search();
+    $("#typessearch").val('');
+  },
+
+  'keypress #typessearch': function (evt) {
+      var value = evt.currentTarget.value;
+      $("div[name='myselection']").jstree(true).search(value);
+  },
+
+  'keydown #typessearch': function (evt) {
+      var value = evt.currentTarget.value;
+      console.log(value);
+      if (evt.keyCode==8 && value.length <=1){
+        $("div[name='myselection']").jstree(true).clear_search();
+      }else if (evt.keyCode==8 && value.length >1){
+        var value = evt.currentTarget.value;
+        $("div[name='myselection']").jstree(true).search(value);
+      }
+  }
+```
+
+Blaze Template
+
+```
+<div class="form-group has-feedback has-clear">
+<input id="typessearch"  type="text" class="form-control" ng-model="ctrl.searchService.searchTerm" placeholder="Suche"/>
+<a id="clearsearch" class="glyphicon glyphicon-remove-sign form-control-feedback form-control-clear" style="pointer-events: auto; text-decoration: none;cursor: pointer;"></a>
+</div>
+
+{{>afFormGroup name="myselection"}}
+```
 
 ## Contributing
 
 Anyone is welcome to contribute. Fork, make your changes, and then submit a pull request.
-
